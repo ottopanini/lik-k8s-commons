@@ -1,6 +1,23 @@
 ## Set up elastic stack in kubernetes cluster
+###### Setup minikube
+    minikube start
+    minikube dashboard
+
+###### setup persistend volume
+    minikube ssh
+    sudo mkdir /mnt/data1
+    sudo mkdir /mnt/data2
+    sudo mkdir /mnt/data3
+    sudo chmod -R 777 /mnt
+    exit
+    
+    kubectl apply -f lik-k8s-commons\pv1.yaml
+    kubectl apply -f lik-k8s-commons\pv2.yaml
+    kubectl apply -f lik-k8s-commons\pv3.yaml
 
 ###### Deploy and access Dasboard
+if running in cloud:
+
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
     kubectl proxy 
     http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/.
@@ -9,10 +26,10 @@
     https://www.edureka.co/community/31282/is-accessing-kubernetes-dashboard-remotely-possible
 
 ###### create docker-registry secret for dockerHub
-    DOCKER_REGISTRY_SERVER=docker.io
-    DOCKER_USER=your dockerID, same as for `docker login`
-    DOCKER_EMAIL=your dockerhub email, same as for `docker login`
-    DOCKER_PASSWORD=your dockerhub pwd, same as for `docker login`
+    $DOCKER_REGISTRY_SERVER=docker.io
+    $DOCKER_USER=your dockerID, same as for `docker login`
+    $DOCKER_EMAIL=your dockerhub email, same as for `docker login`
+    $DOCKER_PASSWORD=your dockerhub pwd, same as for `docker login`
 
     kubectl create secret docker-registry myregistrysecret \
     --docker-server=$DOCKER_REGISTRY_SERVER \
@@ -37,6 +54,10 @@
 ##### install elastic search chart 
     helm repo add elastic https://Helm.elastic.co
     helm install elasticsearch elastic/elasticsearch -f values-linode.yaml
+    
+with minikube:
+
+    helm install elasticsearch elastic/elasticsearch -f lik-k8s-commons\values-es.yaml
 
 ##### install Kibana chart
     helm install kibana elastic/kibana
